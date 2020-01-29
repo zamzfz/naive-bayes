@@ -1,0 +1,2 @@
+suhu,cuaca,kondisi,kelembapan,terbang
+tinggi,siang,berawan,rendah
