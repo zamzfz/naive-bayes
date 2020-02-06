@@ -1,9 +1,8 @@
 import numpy as np
 import pandas as pd
 
-
 def readData():
-	dataSet = pd.read_csv("data_latih_opsi_1.txt",delimiter =',')
+	dataSet = pd.read_csv("data_latih_opsi_1.csv",delimiter =',')
 	return dataSet
 
 def readData_tes():
@@ -19,13 +18,15 @@ def prior_probability(data):
 			c2 += 1
 
 	layak = {
-		"ya" : c1/80,
-		"tidak" : c2/80
+		"ya" : c1,
+		"tidak" : c2
 	}
 
 	return layak
 
 def condition_probability(data,data_tes):
+
+	layak = prior_probability(data)
 
 	layak_suhu = {
 		"ya" : 0,
@@ -43,42 +44,46 @@ def condition_probability(data,data_tes):
 		"ya" : 0,
 		"tidak" : 0
 	}
+	predict = []
+
 
 	for index_tes, row_tes in data_tes.iterrows():		
 		for index, row in data.iterrows():
 			if row["suhu"] == row_tes["suhu"] and row["terbang"] == "ya":
-				layak_suhu["ya"] += 1/80
+				layak_suhu["ya"] += 1/layak["ya"]
 			if row["suhu"] == row_tes["suhu"] and row["terbang"] == "tidak":
-				layak_suhu["tidak"] += 1/80
+				layak_suhu["tidak"] += 1/layak["tidak"]
 
 			if row["kondisi"] == row_tes["kondisi"] and row["terbang"] == "ya":
-				layak_kondisi["ya"] += 1/80
+				layak_kondisi["ya"] += 1/layak["ya"]
 			if row["kondisi"] == row_tes["kondisi"] and row["terbang"] == "tidak":
-				layak_kondisi["tidak"] += 1/80
+				layak_kondisi["tidak"] += 1/layak["tidak"]
 
 			if row["cuaca"] == row_tes["cuaca"] and row["terbang"] == "ya":
-				layak_cuaca["ya"] += 1/80
+				layak_cuaca["ya"] += 1/layak["ya"]
 			if row["cuaca"] == row_tes["cuaca"] and row["terbang"] == "tidak":
-				layak_cuaca["tidak"] += 1/80
+				layak_cuaca["tidak"] += 1/layak["tidak"]
 
 			if row["kelembapan"] == row_tes["kelembapan"] and row["terbang"] == "ya":
-				layak_kelembapan["ya"] += 1/80
+				layak_kelembapan["ya"] += 1/layak["ya"]
 			if row["kelembapan"] == row_tes["kelembapan"] and row["terbang"] == "tidak":
-				layak_kelembapan["tidak"] += 1/80
+				layak_kelembapan["tidak"] += 1/layak["tidak"]
 
-	print(layak_suhu)
-	print(layak_kondisi)
-	print(layak_cuaca)
-	print(layak_kelembapan)
+		ya = layak_suhu["ya"]*layak_kelembapan["ya"]*layak_cuaca["ya"]*layak_kondisi["ya"] 
+		tidak = layak_suhu["tidak"]*layak_kelembapan["tidak"]*layak_cuaca["tidak"]*layak_kondisi["tidak"]
+		
+		if ya > tidak:
+			predict.append("ya")
+		else:
+			predict.append("tidak")
 
-	return layak_suhu,layak_kelembapan,layak_cuaca,layak_kondisi
+	return predict
 
 if __name__ == '__main__' :
-	#layak = prior_probability(readData())
-	data_tes = readData_tes()
-	cond_prob = condition_probability(readData(),data_tes)
-	ya = cond_prob[0]["ya"]*cond_prob[1]["ya"]*cond_prob[2]["ya"]*cond_prob[3]["ya"]
-	tidak = cond_prob[0]["tidak"]*cond_prob[1]["tidak"]*cond_prob[2]["tidak"]*cond_prob[3]["tidak"]
-	print(ya,tidak)	
+	layak = prior_probability(readData())
+	print(layak)
+	# data_tes = readData_tes()
+	# cond_prob = condition_probability(readData(),data_tes)
+	# print(cond_prob)
 
 

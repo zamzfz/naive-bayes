@@ -1,2 +1,10 @@
 suhu,cuaca,kondisi,kelembapan,terbang
-tinggi,siang,berawan,rendah
+normal,sore,berawan,rendah
+normal,malam,berawan,rendah
+normal,pagi,rintik,tinggi
+normal,malam,rintik,rendah
+rendah,siang,berawan,rendah
+normal,pagi,rintik,rendah
+normal,sore,hujan,tinggi
+normal,malam,hujan,tinggi
+rendah,sore,berawan,tinggi
